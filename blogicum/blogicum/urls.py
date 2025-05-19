@@ -35,7 +35,6 @@ urlpatterns = [
     path('', include('blog.urls', namespace='blog')),
     path('pages/', include('pages.urls', namespace='pages')),
     path('accounts/', include('django.contrib.auth.urls')),
-    #path('users/', include('users.urls', namespace='users')),
 ]
 handler403 = 'pages.views.csrf_failure'
 handler404 = 'pages.views.page_not_found'

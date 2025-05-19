@@ -1,4 +1,3 @@
-from itertools import count
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -84,6 +83,7 @@ def post_card(request, id):
         }
     )
 
+
 def post_detail(request, post_id):
     post = get_object_or_404(
         Post.objects.annotate(
@@ -98,8 +98,13 @@ def post_detail(request, post_id):
                   {'post': post, 'comments': comments, 'form': form})
 
 # Category posts view
+
+
 def category_posts(request, category_slug):
-    category = get_object_or_404(Category, slug=category_slug, is_published=True)
+    category = get_object_or_404(
+        Category,
+        slug=category_slug,
+        is_published=True)
     posts = Post.objects.filter(
         category=category,
         is_published=True,
@@ -145,8 +150,6 @@ def post_edit(request, post_id):
     return render(request, 'blog/create.html', {'form': form, 'is_edit': True})
 
 
-
-
 @login_required
 def post_delete(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -156,6 +159,7 @@ def post_delete(request, post_id):
         post.delete()
         return redirect('users:profile', username=request.user.username)
     return render(request, 'blog/delete_post.html', {'post': post})
+
 
 @login_required
 def add_comment(request, post_id):
@@ -168,6 +172,7 @@ def add_comment(request, post_id):
         comment.save()
         return redirect('blog:post_detail', post_id)
     return render(request, 'blog/detail.html', {'post': post, 'form': form})
+
 
 @login_required
 def edit_comment(request, post_id, comment_id):
@@ -182,6 +187,7 @@ def edit_comment(request, post_id, comment_id):
         'form': form,
         'comment': comment,
     })
+
 
 @login_required
 def delete_comment(request, post_id, comment_id):
@@ -202,11 +208,14 @@ def delete_comment(request, post_id, comment_id):
     })
 
 # User profile view
+
+
 def profile(request, username):
     profile_user = get_object_or_404(User, username=username)
     if request.user == profile_user:
         # автор видит все свои посты
-        posts = Post.objects.filter(author=profile_user).annotate(comment_count=Count('comments')).order_by('-pub_date')
+        posts = Post.objects.filter(author=profile_user).annotate(
+            comment_count=Count('comments')).order_by('-pub_date')
     else:
         # остальные только опубликованные и по опубликованным категориям
         posts = Post.objects.filter(
