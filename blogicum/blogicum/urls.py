@@ -18,17 +18,24 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from users.views import register, profile, profile_edit
 from django.conf.urls.static import static
+
+# Expose registration view globally
+from users.views import register as registration_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Global registration URL for reversing as 'registration'
+    path('registration/', registration_view, name='registration'),
+    path('auth/', include('users.urls', namespace='users')),
+    path(
+        'auth/',
+        include(('django.contrib.auth.urls', 'auth'), namespace='auth')
+    ),
     path('', include('blog.urls', namespace='blog')),
     path('pages/', include('pages.urls', namespace='pages')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('auth/registration/', register, name='registration'),
-    path('profile/<str:username>/', profile, name='profile'),
-    path('profile/<str:username>/edit/', profile_edit, name='profile_edit'),
+    #path('users/', include('users.urls', namespace='users')),
 ]
 handler403 = 'pages.views.csrf_failure'
 handler404 = 'pages.views.page_not_found'
