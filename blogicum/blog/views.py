@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
@@ -21,6 +22,7 @@ class PostForm(forms.ModelForm):
             'pub_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -30,7 +32,9 @@ class CommentForm(forms.ModelForm):
 # Index view: show only published posts up to now
 def index(request):
     # Show only published posts up to now
-    posts = Post.objects.filter(is_published=True, pub_date__lte=timezone.now())
+    posts = Post.objects.filter(
+        is_published=True,
+        pub_date__lte=timezone.now())
     return render(request, 'blog/index.html', {'posts': posts})
 
 
@@ -84,6 +88,8 @@ def category_posts(request, category_slug):
             'current_category': category
         }
     )
+
+
 def post_create(request):
     # only logged-in users can create
     if not request.user.is_authenticated:

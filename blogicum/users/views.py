@@ -6,12 +6,16 @@ from blog.models import Post
 
 User = get_user_model()
 
+
 def register(request):
     form = UserCreationForm(request.POST or None)
     if form.is_valid():
         user = form.save()
         return redirect('profile', username=user.username)
-    return render(request, 'registration/registration_form.html', {'form': form})
+    return render(request,
+                  'registration/registration_form.html',
+                  {'form': form})
+
 
 def profile(request, username):
     user_obj = get_object_or_404(User, username=username)
@@ -20,6 +24,7 @@ def profile(request, username):
         'user_obj': user_obj,
         'posts': posts,
     })
+
 
 @login_required
 def profile_edit(request, username):
